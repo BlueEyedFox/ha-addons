@@ -1,0 +1,12 @@
+configuration:
+  PUID:
+    name: User ID
+    description: UID that Heimdall runs as and uses for files in the config folder.
+  PGID:
+    name: Group ID
+    description: GID that Heimdall runs as and uses for files in the config folder.
+  TZ:
+    name: Time zone
+    description: "e.g. Europe/Berlin. Leave empty for UTC."
+network:
+  80/tcp: Web interface (HTTP)

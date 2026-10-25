@@ -32,7 +32,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        addon: ${{ fromJSON(inputs.addons || '["onedev"]') }}
+        addon: ${{ fromJSON(inputs.addons || '["onedev","heimdall"]') }}
         arch: [amd64]
     steps:
       - uses: actions/checkout@v4

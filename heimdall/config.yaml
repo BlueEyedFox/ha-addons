@@ -1,0 +1,27 @@
+name: Heimdall
+version: "2.8.3"
+slug: heimdall
+description: Dashboard for all your web applications
+url: https://github.com/BlueEyedFox/ha-addons/tree/main/heimdall
+arch:
+  - amd64
+image: ghcr.io/blueeyedfox/ha-addon-heimdall-{arch}
+init: false
+startup: services
+boot: auto
+backup: cold
+webui: http://[HOST]:[PORT:8002]
+ports:
+  80/tcp: 8002
+ports_description:
+  80/tcp: Web interface (HTTP)
+map:
+  - addon_config:rw
+  - share:ro
+options:
+  PUID: 1001
+  PGID: 1001
+schema:
+  PUID: int
+  PGID: int
+  TZ: str?

@@ -14,6 +14,7 @@ Oder manuell: **Einstellungen → Add-ons → Add-on-Store → ⋮ → Repositor
 | Add-on | Beschreibung |
 |--------|--------------|
 | [OneDev](onedev/) | Git-Server mit CI/CD, Issues und Pull Requests |
+| [Heimdall](heimdall/) | Dashboard mit Kacheln für alle Web-Anwendungen |
 
 ## Neues Add-on hinzufügen
 

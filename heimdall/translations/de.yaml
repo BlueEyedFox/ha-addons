@@ -1,0 +1,12 @@
+configuration:
+  PUID:
+    name: Benutzer-ID
+    description: UID, unter der Heimdall läuft und Dateien im Konfigurationsordner anlegt.
+  PGID:
+    name: Gruppen-ID
+    description: GID, unter der Heimdall läuft und Dateien im Konfigurationsordner anlegt.
+  TZ:
+    name: Zeitzone
+    description: "z. B. Europe/Berlin. Leer lassen für UTC."
+network:
+  80/tcp: Weboberfläche (HTTP)

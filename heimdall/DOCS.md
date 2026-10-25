@@ -38,9 +38,19 @@ gestoppt (`backup: cold`), damit die SQLite-Datenbank konsistent gesichert wird.
 ## Umstieg vom Add-on von BenoitAnastay
 
 Das ältere Heimdall-Add-on speicherte seine Daten unter `/share/heimdall`. Beim ersten
-Start ohne eigene Datenbank kopiert dieses Add-on den Inhalt von `/share/heimdall`
-einmalig in seinen Konfigurationsordner. Danach wird `/share/heimdall` nicht mehr
-verwendet und kann gelöscht werden, sobald alles funktioniert.
+Start übernimmt dieses Add-on einmalig:
+
+| Alt (`/share/heimdall/…`)    | Neu (Konfigurationsordner) |
+|------------------------------|----------------------------|
+| `database/app.sqlite`        | `www/app.sqlite`           |
+| `.env` (enthält den APP_KEY) | `www/.env`                 |
+| `storage/app/public/icons`, `backgrounds`, `avatars` | `www/icons`, `www/backgrounds`, `www/avatars` |
+
+Waren schon eine Datenbank oder `.env` vorhanden, bleiben sie als `*.bak-<Datum>`
+erhalten. Danach legt das Add-on die Datei `.heimdall-migrated` im Konfigurationsordner
+an und übernimmt nichts mehr. Um die Übernahme zu wiederholen, diese Datei löschen und
+das Add-on neu starten. `/share/heimdall` wird nur gelesen und kann gelöscht werden,
+sobald alles funktioniert.
 
 Beide Add-ons nutzen standardmäßig Port `8002`. Stoppe das alte Add-on vor dem ersten
 Start dieses Add-ons.

@@ -1,0 +1,3 @@
+# Upstream sources checked weekly by .github/workflows/update.yaml
+onedev:
+  dockerhub: 1dev/server

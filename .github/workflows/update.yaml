@@ -1,0 +1,63 @@
+name: Update add-ons
+
+on:
+  schedule:
+    - cron: "0 4 * * 1" # Mondays 04:00 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  packages: write
+
+concurrency:
+  group: update-addons
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    outputs:
+      addons: ${{ steps.check.outputs.addons }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check upstream versions
+        id: check
+        run: echo "addons=$(.github/scripts/check-upstream.sh)" >> "$GITHUB_OUTPUT"
+
+      - name: Push update branch
+        if: steps.check.outputs.addons != '[]'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          msg="Update"
+          for addon in $(echo '${{ steps.check.outputs.addons }}' | yq -r '.[]'); do
+            msg+=" $addon to $(yq -r '.version' "$addon/config.yaml"),"
+          done
+          git commit -am "${msg%,}"
+          git push --force origin HEAD:refs/heads/auto-update
+
+  # Build and smoke-test the new images before main is updated, so Home
+  # Assistant never sees a version whose image does not exist yet.
+  build:
+    needs: check
+    if: needs.check.outputs.addons != '[]'
+    uses: ./.github/workflows/build.yaml
+    with:
+      addons: ${{ needs.check.outputs.addons }}
+      ref: auto-update
+    secrets: inherit
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Fast-forward main to the update branch
+        run: |
+          git fetch origin auto-update
+          git merge --ff-only origin/auto-update
+          git push origin HEAD:main
+          git push origin --delete auto-update

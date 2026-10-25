@@ -1,0 +1,31 @@
+name: OneDev
+version: "16.9.7"
+slug: onedev
+description: Self-hosted Git server with CI/CD, kanban and code search
+url: https://github.com/BlueEyedFox/ha-addons/tree/main/onedev
+arch:
+  - amd64
+image: ghcr.io/blueeyedfox/ha-addon-onedev-{arch}
+init: false
+startup: services
+boot: auto
+backup: cold
+webui: http://[HOST]:[PORT:6610]
+ports:
+  6610/tcp: 6610
+  6611/tcp: 6611
+ports_description:
+  6610/tcp: Web interface (HTTP)
+  6611/tcp: Git over SSH
+options:
+  external_db: false
+  db_type: postgresql
+  db_url: ""
+  db_user: ""
+  db_password: ""
+schema:
+  external_db: bool
+  db_type: list(postgresql|mariadb|mysql)
+  db_url: str?
+  db_user: str?
+  db_password: password?

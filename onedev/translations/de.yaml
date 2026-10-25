@@ -1,0 +1,17 @@
+configuration:
+  external_db:
+    name: Externe Datenbank verwenden
+    description: PostgreSQL/MariaDB/MySQL statt der eingebauten HSQLDB nutzen.
+  db_type:
+    name: Datenbanktyp
+    description: Nur relevant, wenn die externe Datenbank aktiviert ist.
+  db_url:
+    name: JDBC-URL
+    description: "z. B. jdbc:postgresql://<host>:5432/onedev oder jdbc:mariadb://core-mariadb:3306/onedev"
+  db_user:
+    name: Datenbank-Benutzer
+  db_password:
+    name: Datenbank-Passwort
+network:
+  6610/tcp: Weboberfläche (HTTP)
+  6611/tcp: Git über SSH

@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.8.3-2
+
+- Automatische Übernahme der Daten aus dem BenoitAnastay-Add-on entfernt. Umzug stattdessen
+  über die Export-/Import-Funktion von Heimdall (siehe Dokumentation)
+- Kein Zugriff mehr auf `/share`
+
 ## 2.8.3-1
 
 - Übernahme der Daten aus dem BenoitAnastay-Add-on korrigiert: Datenbank, `.env`

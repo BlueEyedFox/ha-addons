@@ -35,22 +35,10 @@ Konfigurationsordner des Add-ons, auf dem Host unter `/addon_configs/<id>_heimda
 Er wird von Home-Assistant-Backups erfasst. Das Add-on wird für die Dauer eines Backups
 gestoppt (`backup: cold`), damit die SQLite-Datenbank konsistent gesichert wird.
 
-## Umstieg vom Add-on von BenoitAnastay
+## Umstieg von einem anderen Heimdall-Add-on
 
-Das ältere Heimdall-Add-on speicherte seine Daten unter `/share/heimdall`. Beim ersten
-Start übernimmt dieses Add-on einmalig:
-
-| Alt (`/share/heimdall/…`)    | Neu (Konfigurationsordner) |
-|------------------------------|----------------------------|
-| `database/app.sqlite`        | `www/app.sqlite`           |
-| `.env` (enthält den APP_KEY) | `www/.env`                 |
-| `storage/app/public/icons`, `backgrounds`, `avatars` | `www/icons`, `www/backgrounds`, `www/avatars` |
-
-Waren schon eine Datenbank oder `.env` vorhanden, bleiben sie als `*.bak-<Datum>`
-erhalten. Danach legt das Add-on die Datei `.heimdall-migrated` im Konfigurationsordner
-an und übernimmt nichts mehr. Um die Übernahme zu wiederholen, diese Datei löschen und
-das Add-on neu starten. `/share/heimdall` wird nur gelesen und kann gelöscht werden,
-sobald alles funktioniert.
+Daten werden nicht automatisch übernommen. Exportiere die Einstellungen im alten Heimdall
+über die Export-Funktion der App und importiere sie im neuen Heimdall wieder.
 
 Beide Add-ons nutzen standardmäßig Port `8002`. Stoppe das alte Add-on vor dem ersten
 Start dieses Add-ons.

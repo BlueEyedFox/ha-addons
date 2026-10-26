@@ -1,0 +1,16 @@
+configuration:
+  latitude:
+    name: Latitude
+    description: "Latitude of the measuring location, e.g. 52.520008. Leave empty to use the Home Assistant location."
+  longitude:
+    name: Longitude
+    description: "Longitude of the measuring location, e.g. 13.404954. Leave empty to use the Home Assistant location."
+  interface_ip:
+    name: Interface IP
+    description: "IP of the Home Assistant host in the meter's network. 0.0.0.0 = default interface."
+  meter_serial:
+    name: Meter serial number
+    description: Only needed if several SMA meters are broadcasting. Shown in the test mode log.
+  dry_run:
+    name: Test mode
+    description: Only show measurements in the log, send nothing.

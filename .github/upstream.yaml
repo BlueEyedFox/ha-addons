@@ -4,3 +4,7 @@ onedev:
 
 heimdall:
   dockerhub: linuxserver/heimdall
+
+ortsnetz-sma:
+  github: thomaslehmann1234/datenerfassung-ortsnetz-auslastung
+  path: sma-shm2-ortsnetz-auslastung/ortsnetz-sma-shm2.py

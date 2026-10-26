@@ -22,6 +22,8 @@ jobs:
 
       - name: Check upstream versions
         id: check
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
         run: echo "addons=$(.github/scripts/check-upstream.sh)" >> "$GITHUB_OUTPUT"
 
       - name: Push update branch

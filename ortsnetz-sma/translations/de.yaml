@@ -1,0 +1,16 @@
+configuration:
+  latitude:
+    name: Breitengrad
+    description: "Breitengrad des Messorts, z. B. 52.520008. Leer lassen für den Standort aus Home Assistant."
+  longitude:
+    name: Längengrad
+    description: "Längengrad des Messorts, z. B. 13.404954. Leer lassen für den Standort aus Home Assistant."
+  interface_ip:
+    name: Interface-IP
+    description: "IP des Home-Assistant-Hosts im Netz des Zählers. 0.0.0.0 = Standard-Interface."
+  meter_serial:
+    name: Zähler-Seriennummer
+    description: Nur nötig, wenn mehrere SMA-Zähler im Netz senden. Steht im Log des Testmodus.
+  dry_run:
+    name: Testmodus
+    description: Messwerte nur im Log anzeigen und nichts senden.

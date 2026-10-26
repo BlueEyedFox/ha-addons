@@ -11,6 +11,9 @@ configuration:
   meter_serial:
     name: Zähler-Seriennummer
     description: Nur nötig, wenn mehrere SMA-Zähler im Netz senden. Steht im Log des Testmodus.
+  send_grid_power:
+    name: Netzleistung senden
+    description: "Wirkleistung am Hausanschluss aus den Zähler-Telegrammen senden (Mittelwert über 5 Minuten). Ausschalten, wenn der Zähler nicht am Hausanschluss sitzt, z. B. Energy Meter am Wechselrichter."
   plant_capacity_kwp:
     name: PV-Anlagengröße (kWp)
     description: Installierte PV-Leistung. Wird nach dem Start einmal gesendet und ist für die PV-Prognose nötig.

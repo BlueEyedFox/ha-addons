@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1.0.3
+
+- Netzleistung am Hausanschluss (`grid_power_w`) aus den Zähler-Telegrammen, Mittelwert
+  über das Sendeintervall. Abschaltbar über `send_grid_power`
+
 ## 0.1.0.2
 
 - Versionsschema korrigiert: `0.1.0-1` galt in Home Assistant als älter als `0.1.0`, das

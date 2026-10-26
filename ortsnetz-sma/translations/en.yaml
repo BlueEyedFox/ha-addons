@@ -11,6 +11,9 @@ configuration:
   meter_serial:
     name: Meter serial number
     description: Only needed if several SMA meters are broadcasting. Shown in the test mode log.
+  send_grid_power:
+    name: Send grid power
+    description: "Send the active power at the grid connection from the meter telegrams (5-minute average). Turn off if the meter is not at the grid connection, e.g. an Energy Meter at the inverter."
   plant_capacity_kwp:
     name: PV system size (kWp)
     description: Installed PV power. Sent once after start, required for the PV forecast.

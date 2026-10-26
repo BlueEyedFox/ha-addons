@@ -33,6 +33,7 @@ Grundlage ist das Script
 | `longitude` | Längengrad des Messorts, z. B. `13.404954`. Leer: Standort aus Home Assistant |
 | `interface_ip` | IP des HA-Hosts im Zähler-Netz (Standard `0.0.0.0` = Standard-Interface). Bei mehreren Netzwerkkarten oder VLANs setzen |
 | `meter_serial` | Seriennummer des Zählers. Nur nötig, wenn mehrere SMA-Zähler senden |
+| `send_grid_power` | Netzleistung am Hausanschluss senden (Standard an) |
 | `plant_capacity_kwp` | Installierte PV-Leistung in kWp (optional) |
 | `battery_capacity_kwh` | Nutzbare Batteriekapazität in kWh (optional) |
 | `battery_soc_entity` | Sensor mit dem Batterie-Ladezustand in % (optional) |
@@ -43,6 +44,12 @@ Grundlage ist das Script
 
 Neben den Zählerwerten kann das Add-on weitere Angaben an ortsnetz-auslastung.de senden:
 
+- **Netzleistung** (`send_grid_power`): Wirkleistung aller Phasen am Hausanschluss aus
+  denselben Zähler-Telegrammen, Bezug positiv, Einspeisung negativ. Gesendet wird der
+  Mittelwert aller Telegramme seit der letzten Messung (etwa eines pro Sekunde). Nur
+  eingeschaltet lassen, wenn der Zähler am Hausanschluss sitzt (beim Sunny Home Manager 2.0
+  üblich). Misst ein SMA Energy Meter nur den Wechselrichter, ausschalten – die API verbietet,
+  Wechselrichterleistung als Netzleistung zu senden.
 - **Anlagengröße und Batteriekapazität** werden nach jedem Start mit der ersten Messung
   gesendet; der Server speichert sie für den Standort.
 - **Batterie-Ladezustand** wird mit jeder Messung aus der angegebenen Entität gelesen.

@@ -11,6 +11,18 @@ configuration:
   meter_serial:
     name: Meter serial number
     description: Only needed if several SMA meters are broadcasting. Shown in the test mode log.
+  plant_capacity_kwp:
+    name: PV system size (kWp)
+    description: Installed PV power. Sent once after start, required for the PV forecast.
+  battery_capacity_kwh:
+    name: Battery capacity (kWh)
+    description: Usable battery storage capacity. Sent once after start.
+  battery_soc_entity:
+    name: Battery state of charge entity
+    description: "Sensor with the state of charge in %, e.g. sensor.battery_soc."
+  pv_forecast_entity:
+    name: PV forecast today entity
+    description: "Sensor with today's PV forecast in Wh, kWh or MWh, e.g. sensor.energy_production_today."
   dry_run:
     name: Test mode
     description: Only show measurements in the log, send nothing.

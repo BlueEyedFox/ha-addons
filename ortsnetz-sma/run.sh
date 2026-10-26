@@ -1,11 +1,12 @@
 #!/bin/sh
 # Home Assistant wrapper for ortsnetz-sma-shm2.py: maps the add-on options to
-# the script's ORTSNETZ_* environment variables. Without coordinates in the
+# the script's ORTSNETZ_* environment variables and starts it via addon.py,
+# which adds the optional API fields. Without coordinates in the
 # options, the home location from the Home Assistant configuration is used.
 set -e
 
 OPTIONS=/data/options.json
-SCRIPT=/app/ortsnetz-sma-shm2.py
+SCRIPT=/app/addon.py
 
 log() {
     echo "$(date '+%Y-%m-%d %H:%M:%S') $*"

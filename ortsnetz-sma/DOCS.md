@@ -33,7 +33,27 @@ Grundlage ist das Script
 | `longitude` | Längengrad des Messorts, z. B. `13.404954`. Leer: Standort aus Home Assistant |
 | `interface_ip` | IP des HA-Hosts im Zähler-Netz (Standard `0.0.0.0` = Standard-Interface). Bei mehreren Netzwerkkarten oder VLANs setzen |
 | `meter_serial` | Seriennummer des Zählers. Nur nötig, wenn mehrere SMA-Zähler senden |
+| `plant_capacity_kwp` | Installierte PV-Leistung in kWp (optional) |
+| `battery_capacity_kwh` | Nutzbare Batteriekapazität in kWh (optional) |
+| `battery_soc_entity` | Sensor mit dem Batterie-Ladezustand in % (optional) |
+| `pv_forecast_entity` | Sensor mit der heutigen PV-Prognose (optional) |
 | `dry_run` | Testmodus: Messungen nur im Protokoll anzeigen, nichts senden |
+
+## Zusätzliche Angaben
+
+Neben den Zählerwerten kann das Add-on weitere Angaben an ortsnetz-auslastung.de senden:
+
+- **Anlagengröße und Batteriekapazität** werden nach jedem Start mit der ersten Messung
+  gesendet; der Server speichert sie für den Standort.
+- **Batterie-Ladezustand** wird mit jeder Messung aus der angegebenen Entität gelesen.
+- **PV-Prognose für heute** wird mit jeder Messung gelesen, z. B. aus Forecast.Solar
+  (`sensor.energy_production_today`). Wh und MWh werden in kWh umgerechnet. Die Prognose
+  wird nur gesendet, wenn `plant_capacity_kwp` gesetzt ist und sie höchstens 10 kWh je kWp
+  beträgt – sonst würde der Server die ganze Messung ablehnen.
+
+Ist eine Entität nicht verfügbar oder nicht numerisch, wird das Feld weggelassen und
+einmalig ein Hinweis ins Protokoll geschrieben. Im Testmodus erscheinen alle Felder in der
+angezeigten Messung.
 
 **Datenschutz:** Die Koordinaten werden mit jeder Messung an ortsnetz-auslastung.de gesendet.
 Ohne eigene Angabe ist das der in Home Assistant hinterlegte Heimstandort. Wer den genauen

@@ -11,6 +11,18 @@ configuration:
   meter_serial:
     name: Zähler-Seriennummer
     description: Nur nötig, wenn mehrere SMA-Zähler im Netz senden. Steht im Log des Testmodus.
+  plant_capacity_kwp:
+    name: PV-Anlagengröße (kWp)
+    description: Installierte PV-Leistung. Wird nach dem Start einmal gesendet und ist für die PV-Prognose nötig.
+  battery_capacity_kwh:
+    name: Batteriekapazität (kWh)
+    description: Nutzbare Kapazität des Batteriespeichers. Wird nach dem Start einmal gesendet.
+  battery_soc_entity:
+    name: Entität Batterie-Ladezustand
+    description: "Sensor mit dem Ladezustand in %, z. B. sensor.battery_soc."
+  pv_forecast_entity:
+    name: Entität PV-Prognose heute
+    description: "Sensor mit der heutigen PV-Prognose in Wh, kWh oder MWh, z. B. sensor.energy_production_today."
   dry_run:
     name: Testmodus
     description: Messwerte nur im Log anzeigen und nichts senden.

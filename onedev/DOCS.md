@@ -40,6 +40,24 @@ Die Datenbank muss bereits existieren und leer sein. Ein Wechsel der Datenbank b
 bestehender Installation erfordert einen Export/Import über OneDev
 (siehe [OneDev-Doku](https://docs.onedev.io/administration-guide/backup-restore)).
 
+### Passwort aus `secrets.yaml`
+
+Statt das Passwort direkt einzutragen, kann `db_password` auf einen Eintrag in der
+`secrets.yaml` von Home Assistant verweisen:
+
+```yaml
+db_password: "!secret onedev_db_password"
+```
+
+In `/config/secrets.yaml`:
+
+```yaml
+onedev_db_password: MeinGeheimesPasswort
+```
+
+Der Supervisor setzt den Wert beim Start des Add-ons ein. Nach einer Änderung in
+`secrets.yaml` das Add-on neu starten.
+
 ## CI/CD
 
 Das Add-on hat keinen Zugriff auf den Docker-Daemon des Hosts. Verwende in OneDev einen

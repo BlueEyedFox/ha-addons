@@ -39,7 +39,7 @@ Der Workflow **Update add-ons** prüft jeden Montag um 04:00 UTC, ob es für die
 1. Er erhöht `version` in `config.yaml`, setzt im `Dockerfile` `ARG …_VERSION` bzw.
    `ARG UPSTREAM_COMMIT` und ergänzt `CHANGELOG.md` auf dem Branch `auto-update`.
    Bei GitHub-Quellen wird die Version aus `VERSION = "…x.y.z"` in der Datei übernommen;
-   ist sie unverändert, wird der Suffix erhöht (`0.1.0` → `0.1.0-1`).
+   ist sie unverändert, wird der Suffix erhöht (`0.1.0` → `0.1.0.1`).
 2. Er baut das Image und führt den Smoke-Test aus. Bei Erfolg wird das Image nach ghcr.io gepusht.
 3. Erst danach wird `main` aktualisiert, und Home Assistant zeigt das Update an.
 
@@ -47,5 +47,7 @@ Schlägt Build oder Smoke-Test fehl, bleibt `main` unverändert, und GitHub vers
 Fehler-Mail. Manuell starten: **Actions → Update add-ons → Run workflow**.
 Lokal prüfen: `.github/scripts/check-upstream.sh` (benötigt `curl` und `yq`).
 
-Für Änderungen nur am Add-on (gleiche Upstream-Version) die Version mit Suffix erhöhen,
-z. B. `16.9.7-1`.
+Für Änderungen nur am Add-on (gleiche Upstream-Version) eine vierte Stelle anhängen bzw.
+erhöhen, z. B. `16.9.7` → `16.9.7.1` → `16.9.7.2`. **Kein `-1`-Suffix verwenden:** Der
+Supervisor liest `16.9.7-1` als Vorabversion, also älter als `16.9.7`, und bietet das Update
+nicht an.

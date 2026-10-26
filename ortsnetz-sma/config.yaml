@@ -1,5 +1,5 @@
 name: Ortsnetz-Auslastung SMA
-version: "0.1.0-1"
+version: "0.1.0.2"
 slug: ortsnetz-sma
 description: Sendet Netzspannung und -frequenz vom SMA Sunny Home Manager 2.0 / Energy Meter an ortsnetz-auslastung.de
 url: https://github.com/BlueEyedFox/ha-addons/tree/main/ortsnetz-sma

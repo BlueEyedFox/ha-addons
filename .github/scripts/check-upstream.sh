@@ -4,7 +4,7 @@
 #   dockerhub: <repo>             newest x.y.z tag -> ARG …_VERSION
 #   github: <owner/repo>, path:   newest commit touching path -> ARG UPSTREAM_COMMIT;
 #                                 version from VERSION = "…x.y.z" in that file,
-#                                 or a bumped -N suffix if it did not change
+#                                 or a bumped 4th component if it did not change
 # Prints a JSON list of updated add-on slugs on stdout, e.g. ["onedev"].
 # Requires: curl, yq (mikefarah v4), sed, sort -V. Run from the repo root.
 # GITHUB_TOKEN is used for GitHub API requests if set.
@@ -12,6 +12,18 @@ set -euo pipefail
 
 UPSTREAM_FILE=.github/upstream.yaml
 updated=()
+
+# Add-on versions are <upstream x.y.z>[.N]; N counts add-on-only changes. A "-N"
+# suffix must not be used: Supervisor reads it as a SemVer pre-release, older
+# than x.y.z, and never offers the update. Old "-N" versions are still parsed.
+upstream_version() {
+    echo "${1%%-*}" | cut -d. -f1-3
+}
+
+addon_revision() {
+    local rest=${1#"$(upstream_version "$1")"}
+    echo "${rest#[.-]}"
+}
 
 upstream() {
     yq -r ".\"$1\".$2 // \"\"" "$UPSTREAM_FILE"
@@ -43,7 +55,7 @@ update_dockerhub() {
     local current current_upstream latest newest
 
     current=$(yq -r '.version' "$config")
-    current_upstream=${current%%-*}
+    current_upstream=$(upstream_version "$current")
     latest=$(latest_dockerhub_version "$repo")
 
     if [ -z "$latest" ]; then
@@ -69,7 +81,7 @@ update_github() {
     local current current_upstream current_commit latest script_version version
 
     current=$(yq -r '.version' "$config")
-    current_upstream=${current%%-*}
+    current_upstream=$(upstream_version "$current")
     current_commit=$(sed -nE 's/^ARG UPSTREAM_COMMIT=//p' "$addon/Dockerfile")
     latest=$(github_api "repos/$repo/commits?path=$path&per_page=1" | yq -p json -r '.[0].sha // ""')
 
@@ -86,10 +98,8 @@ update_github() {
         | grep -E '^VERSION *=' | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | head -n 1 || true)
     if [ -n "$script_version" ] && [ "$script_version" != "$current_upstream" ]; then
         version=$script_version
-    elif [ "$current" = "$current_upstream" ]; then
-        version="$current-1"
     else
-        version="$current_upstream-$((${current##*-} + 1))"
+        version="$current_upstream.$(($(addon_revision "$current") + 1))"
     fi
 
     echo "[$addon] $current -> $version (${latest:0:7})" >&2

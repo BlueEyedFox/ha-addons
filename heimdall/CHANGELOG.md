@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.8.3.3
+
+- Versionsschema korrigiert: `2.8.3-2` galt in Home Assistant als älter als `2.8.3`, das
+  Update ließ sich daher nicht installieren. Keine funktionale Änderung
+
 ## 2.8.3-2
 
 - Automatische Übernahme der Daten aus dem BenoitAnastay-Add-on entfernt. Umzug stattdessen

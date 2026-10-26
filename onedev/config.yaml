@@ -1,5 +1,5 @@
 name: OneDev
-version: "16.9.7"
+version: "16.9.8"
 slug: onedev
 description: Self-hosted Git server with CI/CD, kanban and code search
 url: https://github.com/BlueEyedFox/ha-addons/tree/main/onedev

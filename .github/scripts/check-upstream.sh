@@ -2,11 +2,15 @@
 # Checks the upstream sources listed in .github/upstream.yaml and bumps add-ons
 # with a newer release (config.yaml, Dockerfile, CHANGELOG.md). Sources:
 #   dockerhub: <repo>             newest x.y.z tag -> ARG …_VERSION
+#   dockerhub: <repo>, tag:       new digest of that tag -> ARG UPSTREAM_DIGEST;
+#                                 version from the x.y.z printed by version_cmd
+#                                 run in the image, or a bumped 4th component
 #   github: <owner/repo>, path:   newest commit touching path -> ARG UPSTREAM_COMMIT;
 #                                 version from VERSION = "…x.y.z" in that file,
 #                                 or a bumped 4th component if it did not change
 # Prints a JSON list of updated add-on slugs on stdout, e.g. ["onedev"].
-# Requires: curl, yq (mikefarah v4), sed, sort -V. Run from the repo root.
+# Requires: curl, yq (mikefarah v4), sed, sort -V, docker (for version_cmd).
+# Run from the repo root.
 # GITHUB_TOKEN is used for GitHub API requests if set.
 set -euo pipefail
 
@@ -39,6 +43,17 @@ latest_dockerhub_version() {
         | yq -p json -r '.results[].name' \
         | grep -E '^[0-9]+\.[0-9]+\.[0-9]+$' \
         | sort -V | tail -n 1
+}
+
+# Prints the add-on version for upstream version $2: $2 itself if it differs
+# from the current upstream version, otherwise the next add-on revision.
+next_version() {
+    local current=$1 candidate=$2
+    if [ -n "$candidate" ] && [ "$candidate" != "$(upstream_version "$current")" ]; then
+        echo "$candidate"
+    else
+        echo "$(upstream_version "$current").$(($(addon_revision "$current") + 1))"
+    fi
 }
 
 github_api() {
@@ -75,13 +90,42 @@ update_dockerhub() {
     add_changelog "$addon" "$latest" "Update auf \`$repo:$latest\`"
 }
 
+# Returns 0 and bumps the add-on if the Docker Hub tag points to a new image.
+update_dockerhub_digest() {
+    local addon=$1 repo=$2 tag=$3 version_cmd=$4 config="$1/config.yaml"
+    local current current_digest latest image_version version
+
+    current=$(yq -r '.version' "$config")
+    current_digest=$(sed -nE 's/^ARG UPSTREAM_DIGEST=//p' "$addon/Dockerfile")
+    latest=$(curl -fsSL "https://hub.docker.com/v2/repositories/$repo/tags/$tag" | yq -p json -r '.digest // ""')
+
+    if [ -z "$latest" ]; then
+        echo "[$addon] no digest found for $repo:$tag" >&2
+        exit 1
+    fi
+    if [ "$latest" = "$current_digest" ]; then
+        echo "[$addon] up to date ($current, ${current_digest:7:12})" >&2
+        return 1
+    fi
+
+    if [ -n "$version_cmd" ]; then
+        image_version=$(docker run --rm --entrypoint sh "$repo@$latest" -c "$version_cmd" \
+            | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | sort -V | tail -n 1 || true)
+    fi
+    version=$(next_version "$current" "${image_version:-}")
+
+    echo "[$addon] $current -> $version (${latest:7:12})" >&2
+    sed -i -E "s/^version: .*/version: \"$version\"/" "$config"
+    sed -i -E "s/^(ARG UPSTREAM_DIGEST=).*/\1$latest/" "$addon/Dockerfile"
+    add_changelog "$addon" "$version" "Update auf \`$repo:$tag\` (\`${latest:7:12}\`)"
+}
+
 # Returns 0 and bumps the add-on if the file in the GitHub repo has a newer commit.
 update_github() {
     local addon=$1 repo=$2 path=$3 config="$1/config.yaml"
-    local current current_upstream current_commit latest script_version version
+    local current current_commit latest script_version version
 
     current=$(yq -r '.version' "$config")
-    current_upstream=$(upstream_version "$current")
     current_commit=$(sed -nE 's/^ARG UPSTREAM_COMMIT=//p' "$addon/Dockerfile")
     latest=$(github_api "repos/$repo/commits?path=$path&per_page=1" | yq -p json -r '.[0].sha // ""')
 
@@ -96,11 +140,7 @@ update_github() {
 
     script_version=$(curl -fsSL "https://raw.githubusercontent.com/$repo/$latest/$path" \
         | grep -E '^VERSION *=' | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | head -n 1 || true)
-    if [ -n "$script_version" ] && [ "$script_version" != "$current_upstream" ]; then
-        version=$script_version
-    else
-        version="$current_upstream.$(($(addon_revision "$current") + 1))"
-    fi
+    version=$(next_version "$current" "$script_version")
 
     echo "[$addon] $current -> $version (${latest:0:7})" >&2
     sed -i -E "s/^version: .*/version: \"$version\"/" "$config"
@@ -112,7 +152,10 @@ for addon in $(yq -r 'keys | .[]' "$UPSTREAM_FILE"); do
     dockerhub=$(upstream "$addon" dockerhub)
     github=$(upstream "$addon" github)
 
-    if [ -n "$dockerhub" ]; then
+    if [ -n "$dockerhub" ] && [ -n "$(upstream "$addon" tag)" ]; then
+        update_dockerhub_digest "$addon" "$dockerhub" "$(upstream "$addon" tag)" \
+            "$(upstream "$addon" version_cmd)" && updated+=("$addon")
+    elif [ -n "$dockerhub" ]; then
         update_dockerhub "$addon" "$dockerhub" && updated+=("$addon")
     elif [ -n "$github" ]; then
         update_github "$addon" "$github" "$(upstream "$addon" path)" && updated+=("$addon")

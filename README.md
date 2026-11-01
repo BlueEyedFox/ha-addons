@@ -14,6 +14,7 @@ Oder manuell: **Einstellungen → Add-ons → Add-on-Store → ⋮ → Repositor
 | Add-on | Beschreibung |
 |--------|--------------|
 | [OneDev](onedev/) | Git-Server mit CI/CD, Issues und Pull Requests |
+| [OneDev Agent](onedev-agent/) | Build-Agent, der OneDev-Jobs in Docker auf dem HA-Host ausführt |
 | [Heimdall](heimdall/) | Dashboard mit Kacheln für alle Web-Anwendungen |
 | [Ortsnetz-Auslastung SMA](ortsnetz-sma/) | Netzspannung vom SMA Home Manager 2.0 an ortsnetz-auslastung.de senden |
 
@@ -23,7 +24,9 @@ Oder manuell: **Einstellungen → Add-ons → Add-on-Store → ⋮ → Repositor
 2. In `config.yaml` `image: ghcr.io/blueeyedfox/ha-addon-<slug>-{arch}` setzen.
 3. `<slug>` in der Standard-Matrix von `.github/workflows/build.yaml` ergänzen.
 4. Upstream-Quelle in `.github/upstream.yaml` eintragen (für automatische Updates):
-   `dockerhub: <image>` oder, ohne Docker-Image, `github: <owner/repo>` + `path: <datei>`.
+   `dockerhub: <image>`; für Images ohne Versions-Tags zusätzlich `tag: <tag>` und optional
+   `version_cmd: <befehl>` (gibt die Version im Image aus); ohne Docker-Image
+   `github: <owner/repo>` + `path: <datei>`.
 5. Optional `<slug>/smoke-test.sh <image>` anlegen (ausführbar). Er läuft vor jedem Push des Images.
 6. Nach dem ersten Build das ghcr.io-Paket auf **public** stellen.
 
@@ -33,19 +36,21 @@ einer neuen Version `version` in `config.yaml` erhöhen.
 ## Automatische Updates
 
 Der Workflow **Update add-ons** prüft jeden Montag um 04:00 UTC, ob es für die Add-ons in
-`.github/upstream.yaml` neue Versionen gibt: bei `dockerhub` ein neueres `x.y.z`-Tag, bei
-`github` einen neueren Commit an der Datei unter `path`. Falls ja:
+`.github/upstream.yaml` neue Versionen gibt: bei `dockerhub` ein neueres `x.y.z`-Tag (mit
+`tag` einen neuen Digest dieses Tags), bei `github` einen neueren Commit an der Datei unter
+`path`. Falls ja:
 
-1. Er erhöht `version` in `config.yaml`, setzt im `Dockerfile` `ARG …_VERSION` bzw.
-   `ARG UPSTREAM_COMMIT` und ergänzt `CHANGELOG.md` auf dem Branch `auto-update`.
-   Bei GitHub-Quellen wird die Version aus `VERSION = "…x.y.z"` in der Datei übernommen;
-   ist sie unverändert, wird der Suffix erhöht (`0.1.0` → `0.1.0.1`).
+1. Er erhöht `version` in `config.yaml`, setzt im `Dockerfile` `ARG …_VERSION`,
+   `ARG UPSTREAM_DIGEST` bzw. `ARG UPSTREAM_COMMIT` und ergänzt `CHANGELOG.md` auf dem
+   Branch `auto-update`. Bei GitHub-Quellen wird die Version aus `VERSION = "…x.y.z"` in der
+   Datei übernommen, bei Digest-Quellen aus der Ausgabe von `version_cmd`; ist sie
+   unverändert, wird der Suffix erhöht (`0.1.0` → `0.1.0.1`).
 2. Er baut das Image und führt den Smoke-Test aus. Bei Erfolg wird das Image nach ghcr.io gepusht.
 3. Erst danach wird `main` aktualisiert, und Home Assistant zeigt das Update an.
 
 Schlägt Build oder Smoke-Test fehl, bleibt `main` unverändert, und GitHub verschickt eine
 Fehler-Mail. Manuell starten: **Actions → Update add-ons → Run workflow**.
-Lokal prüfen: `.github/scripts/check-upstream.sh` (benötigt `curl` und `yq`).
+Lokal prüfen: `.github/scripts/check-upstream.sh` (benötigt `curl`, `yq` und `docker`).
 
 Für Änderungen nur am Add-on (gleiche Upstream-Version) eine vierte Stelle anhängen bzw.
 erhöhen, z. B. `16.9.7` → `16.9.7.1` → `16.9.7.2`. **Kein `-1`-Suffix verwenden:** Der

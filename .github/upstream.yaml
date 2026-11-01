@@ -8,3 +8,9 @@ heimdall:
 ortsnetz-sma:
   github: thomaslehmann1234/datenerfassung-ortsnetz-auslastung
   path: sma-shm2-ortsnetz-auslastung/ortsnetz-sma-shm2.py
+
+# Only a "latest" tag exists; the agent version is the lib directory name
+onedev-agent:
+  dockerhub: 1dev/agent
+  tag: latest
+  version_cmd: ls /agent/lib

@@ -1,0 +1,28 @@
+configuration:
+  server_url:
+    name: Server URL
+    description: "Address of the OneDev server, e.g. https://onedev.example.com"
+  agent_token:
+    name: Agent token
+    description: Create one in OneDev under Administration → Agents → Add Agent. Each token can only be used by one agent.
+  agent_name:
+    name: Agent name
+    description: Name of the agent in OneDev. Leave empty to use the add-on's hostname.
+  attributes:
+    name: Attributes
+    description: Agent attributes (name and value) that jobs can use to select agents.
+  max_memory_percent:
+    name: Maximum Java memory (%)
+    description: Share of the system memory the agent's Java VM may use at most.
+  trust_certs:
+    name: Trusted certificates
+    description: Certificate files (PEM) under /ssl, e.g. for a server with a self-signed certificate.
+  http_proxy:
+    name: HTTP proxy
+    description: "e.g. http://proxy:3128"
+  https_proxy:
+    name: HTTPS proxy
+    description: "e.g. http://proxy:3128"
+  no_proxy:
+    name: No proxy for
+    description: "Comma-separated hosts/domains that bypass the proxy, e.g. localhost,.home.lan"

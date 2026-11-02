@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.8.4
+
+- Update auf `linuxserver/heimdall:2.8.4`
+
 ## 2.8.3.3
 
 - Versionsschema korrigiert: `2.8.3-2` galt in Home Assistant als älter als `2.8.3`, das

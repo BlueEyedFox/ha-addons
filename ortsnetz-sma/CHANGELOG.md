@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.0.4
+
+- Update auf Upstream-Commit `03b91ea`
+
 ## 0.1.0.3
 
 - Netzleistung am Hausanschluss (`grid_power_w`) aus den Zähler-Telegrammen, Mittelwert

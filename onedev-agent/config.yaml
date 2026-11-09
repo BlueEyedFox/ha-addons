@@ -1,5 +1,5 @@
 name: OneDev Agent
-version: "4.1.5"
+version: "4.1.5.1"
 slug: onedev-agent
 description: Build agent for OneDev that runs CI/CD jobs in Docker on the Home Assistant host
 url: https://github.com/BlueEyedFox/ha-addons/tree/main/onedev-agent

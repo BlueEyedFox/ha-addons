@@ -1,6 +1,6 @@
 FROM python:3.13-alpine
 
-ARG UPSTREAM_COMMIT=6e6087bf14e159709efaf3e416a843bfa7603b33
+ARG UPSTREAM_COMMIT=03b91eab2f386f30f023a1f459b6d9e10703772e
 
 RUN apk add --no-cache curl jq
 

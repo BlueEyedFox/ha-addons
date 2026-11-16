@@ -1,5 +1,9 @@
 # Changelog
 
+## 17.2.0
+
+- Update auf `1dev/server:17.2.0`
+
 ## 17.1.2
 
 - Update auf `1dev/server:17.1.2`

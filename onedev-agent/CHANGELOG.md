@@ -1,5 +1,9 @@
 # Changelog
 
+## 4.1.7
+
+- Update auf `1dev/agent:latest` (`9401ecd64a30`)
+
 ## 4.1.5.1
 
 - Update auf `1dev/agent:latest` (`fde2da2ed954`)

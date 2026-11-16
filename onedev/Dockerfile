@@ -1,4 +1,4 @@
-ARG ONEDEV_VERSION=17.1.2
+ARG ONEDEV_VERSION=17.2.0
 FROM 1dev/server:${ONEDEV_VERSION}
 
 RUN apt-get update \
